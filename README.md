@@ -1,16 +1,17 @@
 # pytorch_ema
 
-A very small library for computing exponential moving averages of model
-parameters.
+> A very small library for computing exponential moving averages of model parameters.
 
-This library was written for personal use. Nevertheless, if you run into issues
-or have suggestions for improvement, feel free to open either a new issue or
-pull request.
+A fork of @fadel's nice library [`pytorch_ema`](https://github.com/fadel/pytorch_ema) that adds:
+ - Some unit tests
+ - Type hints
+ - Option to maintain a reference to `model.parameters()` (like an optimizer)
+ - `state_dict()`/`load_state_dict()` support
 
 ## Installation
 
 ```
-pip install -U git+https://github.com/fadel/pytorch_ema
+pip install -U git+https://github.com/Linux-cpp-lisp/pytorch_ema
 ```
 
 ## Example
@@ -38,7 +39,7 @@ for _ in range(20):
     optimizer.zero_grad()
     loss.backward()
     optimizer.step()
-    ema.update(model.parameters())
+    ema.update()
 
 # Validation: original
 model.eval()
@@ -48,12 +49,12 @@ print(loss.item())
 
 # Validation: with EMA
 # First save original parameters before replacing with EMA version
-ema.store(model.parameters())
+ema.store()
 # Copy EMA parameters to model
-ema.copy_to(model.parameters())
+ema.copy_to()
 logits = model(x_val)
 loss = F.cross_entropy(logits, y_val)
 print(loss.item())
 # Restore original parameters to resume training later
-ema.restore(model.parameters())
+ema.restore()
 ```
